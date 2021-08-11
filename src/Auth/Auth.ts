@@ -53,7 +53,6 @@ class Auth {
     // set the time that the access token will expire
     const expireAt = JSON.stringify((authResult.expiresIn || 0) * 1000 + new Date().getTime());
 
-
     localStorage.setItem("access_token", authResult.accessToken as string);
     localStorage.setItem("id_token", authResult.idToken as string);
     localStorage.setItem("expires_at", expireAt);
@@ -63,6 +62,17 @@ class Auth {
     const expiresAt = JSON.parse(localStorage.getItem('expires_at') as string);
     return new Date().getTime() < expiresAt;
   }
+
+  logout = () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("id_token");
+    localStorage.removeItem("expires_at");
+
+    this.auth0.logout({
+      clientID: process.env.REACT_APP_AUTH0_CLIENT_ID,
+      returnTo: process.env.REACT_APP_AUTH0_LOGOUT_URL
+    });
+  };
 }
 
 export default Auth;
