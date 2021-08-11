@@ -5,7 +5,7 @@ import Auth from './Auth/Auth';
 import Home from './Components/Home';
 import Nav from './Components/Nav';
 import Profile from './Components/Profile';
-
+import Callback from './Components/Callback';
 
 interface AppProps {
   history: History;
@@ -25,6 +25,7 @@ export default class App extends Component<AppProps> {
         <Nav />
         <div className="body">
           <Route path="/" exact render={(props) => <Home auth={this.auth} {...props} />} />
+          <Route path="/callback" render={(props) => <Callback auth={this.auth} {...props} />} />
           <Route path="/profile" component={Profile} />
         </div>
       </>
