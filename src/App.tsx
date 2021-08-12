@@ -8,6 +8,7 @@ import Profile from './Components/Profile';
 import Callback from './Components/Callback';
 import Public from './Components/Public';
 import Private from './Components/Private';
+import Courses from './Components/Courses';
 
 interface AppProps {
   history: History;
@@ -41,6 +42,13 @@ export default class App extends Component<AppProps> {
               props =>
                 this.auth.isAuthenticated() ?
                   <Private auth={this.auth} {...props} />
+                  : <Redirect to="/" />
+            } />
+          <Route path="/courses"
+            render={
+              props =>
+                this.auth.isAuthenticated() && this.auth.hasUserScopes(['read:courses']) ?
+                  <Courses auth={this.auth} {...props} />
                   : <Redirect to="/" />
             } />
         </div>
