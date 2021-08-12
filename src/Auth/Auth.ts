@@ -6,6 +6,8 @@ class Auth {
   };
   auth0: auth0.WebAuth;
   userProfile: any;
+  requestedScopes = 'openid profile email read:courses';
+
   /**
    *
    */
@@ -25,7 +27,7 @@ class Auth {
       /**
        * OpenId will be used for authentication
        */
-      scope: 'openid profile email'
+      scope: this.requestedScopes
     });
   }
 
@@ -54,9 +56,17 @@ class Auth {
     // set the time that the access token will expire
     const expireAt = JSON.stringify((authResult.expiresIn || 0) * 1000 + new Date().getTime());
 
+    // if there is a value on the `scope` param from the authResult,
+    // use it to set scopes in the session for the user.
+    // Otherwise use the scopes as requested. If no scopes were requested, 
+    // set it to nothing
+    const scopes = authResult.scope || this.requestedScopes || '';
+
+
     localStorage.setItem("access_token", authResult.accessToken as string);
     localStorage.setItem("id_token", authResult.idToken as string);
     localStorage.setItem("expires_at", expireAt);
+    localStorage.setItem("scopes", JSON.stringify(scopes));
   };
 
   isAuthenticated(): boolean {
@@ -68,6 +78,7 @@ class Auth {
     localStorage.removeItem("access_token");
     localStorage.removeItem("id_token");
     localStorage.removeItem("expires_at");
+    localStorage.removeItem("scopes");
 
     this.userProfile = null;
 
@@ -99,6 +110,11 @@ class Auth {
     });
   };
 
+
+  hasUserScopes(scopes: string[]): boolean {
+    const grantedScopes = (JSON.parse(localStorage.getItem('scopes') as string) || "").split(" ");
+    return scopes.every(scope => grantedScopes.includes(scope ));
+  }
 }
 
 export default Auth;
