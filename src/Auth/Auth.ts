@@ -14,8 +14,8 @@ class Auth {
     this.auth0 = new auth0.WebAuth({
       domain: process.env.REACT_APP_AUTH0_DOMAIN as string,
       clientID: process.env.REACT_APP_AUTH0_CLIENT_ID as string,
-      redirectUri: process.env.REACT_APP_AUTH0_CALLBACK_URL as string,
-
+      redirectUri: process.env.REACT_APP_AUTH0_CALLBACK_URL,
+      audience: process.env.REACT_APP_AUTH0_AUDIENCE,
       /**
        * token is an access token - authorization token
        * id_token is OpenId token - authentication token
