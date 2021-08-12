@@ -22,6 +22,10 @@ export default function Profile(props: { auth: Auth; }) {
     };
   });
 
+  if (error) {
+    return <h1>{error}</h1>;
+  }
+  
   if (!profile) {
     return <h1>
       Loading...
