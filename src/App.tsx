@@ -7,6 +7,7 @@ import Nav from './Components/Nav';
 import Profile from './Components/Profile';
 import Callback from './Components/Callback';
 import Public from './Components/Public';
+import Private from './Components/Private';
 
 interface AppProps {
   history: History;
@@ -35,6 +36,7 @@ export default class App extends Component<AppProps> {
                   : <Redirect to="/" />
             } />
           <Route path="/public" component={Public} />
+          <Route path="/private" render={props => <Private auth={this.auth} {...props} />} />
         </div>
       </>
     );
