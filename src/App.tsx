@@ -36,7 +36,13 @@ export default class App extends Component<AppProps> {
                   : <Redirect to="/" />
             } />
           <Route path="/public" component={Public} />
-          <Route path="/private" render={props => <Private auth={this.auth} {...props} />} />
+          <Route path="/private"
+            render={
+              props =>
+                this.auth.isAuthenticated() ?
+                  <Private auth={this.auth} {...props} />
+                  : <Redirect to="/" />
+            } />
         </div>
       </>
     );
