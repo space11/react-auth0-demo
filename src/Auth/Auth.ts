@@ -5,6 +5,7 @@ class Auth {
     push: (arg0: string) => void;
   };
   auth0: auth0.WebAuth;
+  userProfile: any;
   /**
    *
    */
@@ -68,11 +69,36 @@ class Auth {
     localStorage.removeItem("id_token");
     localStorage.removeItem("expires_at");
 
+    this.userProfile = null;
+
     this.auth0.logout({
       clientID: process.env.REACT_APP_AUTH0_CLIENT_ID,
       returnTo: process.env.REACT_APP_AUTH0_LOGOUT_URL
     });
   };
+
+  getAccessToken = () => {
+    const accessToken = localStorage.getItem('access_token');
+    if (!accessToken) {
+      throw new Error('No access token found.');
+    }
+    return accessToken;
+  };
+
+  getProfile = (cb: (arg0: any, arg1: any) => void) => {
+    if (this.userProfile) {
+      return cb(this.userProfile, undefined);
+    }
+
+    this.auth0.client.userInfo(this.getAccessToken(), (err, profile) => {
+      if (profile) {
+        this.userProfile = profile;
+      }
+
+      cb(profile, err);
+    });
+  };
+
 }
 
 export default Auth;

@@ -1,6 +1,6 @@
 import { History } from 'history';
 import React, { Component } from 'react';
-import { Route } from "react-router-dom";
+import { Redirect, Route } from "react-router-dom";
 import Auth from './Auth/Auth';
 import Home from './Components/Home';
 import Nav from './Components/Nav';
@@ -26,7 +26,13 @@ export default class App extends Component<AppProps> {
         <div className="body">
           <Route path="/" exact render={(props) => <Home auth={this.auth} {...props} />} />
           <Route path="/callback" render={(props) => <Callback auth={this.auth} {...props} />} />
-          <Route path="/profile" component={Profile} />
+          <Route path="/profile" 
+          render={
+            props =>  
+            this.auth.isAuthenticated() ? 
+            <Profile auth={this.auth} {...props} /> 
+            : <Redirect to="/" /> 
+          } />
         </div>
       </>
     );
