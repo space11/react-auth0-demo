@@ -78,6 +78,8 @@ class Auth {
     _accessToken = authResult.accessToken!;
     // eslint-disable-next-line
     _idToken = authResult.idToken;
+
+    this.scheduleTokenRenewal();
   };
 
   isAuthenticated(): boolean {
@@ -130,6 +132,13 @@ class Auth {
         cb(err, result);
       }
     });
+  }
+
+  scheduleTokenRenewal() {
+    const delay = _expiresAt - Date.now();
+    if (delay > 0) {
+      setTimeout(() => this.renewToken, delay);
+    }
   }
 }
 
