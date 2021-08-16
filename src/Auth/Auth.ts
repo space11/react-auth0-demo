@@ -1,4 +1,4 @@
-import auth0 from 'auth0-js';
+import auth0, { Auth0Error } from 'auth0-js';
 import * as H from 'history';
 
 const REDIRECT_ON_LOGIN = 'redirect_on_login';
@@ -116,6 +116,20 @@ class Auth {
   hasUserScopes(scopes: string[]): boolean {
     const grantedScopes = (_scopes || "").split(" ");
     return scopes.every(scope => grantedScopes.includes(scope));
+  }
+
+
+  renewToken(cb: (err: Auth0Error | null, result: any) => void) {
+    this.auth0.checkSession({}, (err, result) => {
+      if (err) {
+        console.log(`Error: ${err.error} - ${err.error_description}.`);
+      } else {
+        this.setSession(result);
+      }
+      if (cb) {
+        cb(err, result);
+      }
+    });
   }
 }
 
