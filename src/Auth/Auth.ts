@@ -1,9 +1,8 @@
 import auth0 from 'auth0-js';
+import * as H from 'history';
 
 class Auth {
-  history: {
-    push: (arg0: string) => void;
-  };
+  history: H.History;
   auth0: auth0.WebAuth;
   userProfile: any;
   requestedScopes = 'openid profile email read:courses';
@@ -11,7 +10,7 @@ class Auth {
   /**
    *
    */
-  constructor(history: { push: (arg0: string) => void; }) {
+  constructor(history: H.History) {
     this.history = history;
     this.auth0 = new auth0.WebAuth({
       domain: process.env.REACT_APP_AUTH0_DOMAIN as string,
@@ -32,6 +31,7 @@ class Auth {
   }
 
   login = () => {
+    localStorage.setItem('redirect_on_login', JSON.stringify(this.history.location));
     /** This will redirect to the Auth0 login page */
     this.auth0.authorize();
   };
