@@ -62,7 +62,6 @@ class Auth {
     // set it to nothing
     const scopes = authResult.scope || this.requestedScopes || '';
 
-
     localStorage.setItem("access_token", authResult.accessToken as string);
     localStorage.setItem("id_token", authResult.idToken as string);
     localStorage.setItem("expires_at", expireAt);
@@ -113,7 +112,7 @@ class Auth {
 
   hasUserScopes(scopes: string[]): boolean {
     const grantedScopes = (JSON.parse(localStorage.getItem('scopes') as string) || "").split(" ");
-    return scopes.every(scope => grantedScopes.includes(scope ));
+    return scopes.every(scope => grantedScopes.includes(scope));
   }
 }
 

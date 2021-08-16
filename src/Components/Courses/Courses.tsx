@@ -6,8 +6,8 @@ interface Course {
   title: string;
 }
 
-const fetchMessage = (accessToken: string, setMessageFn: (arg1: Course[]) => void) => {
-  fetch('/courses', {
+const fetchMessage = (url: string, accessToken: string, setMessageFn: ((arg1: Course[]) => void) | ((arg1: string) => void)) => {
+  fetch(`/${url}`, {
     headers: { Authorization: `Bearer ${accessToken}` }
   }).then(response => {
     if (response.ok) {
@@ -15,25 +15,30 @@ const fetchMessage = (accessToken: string, setMessageFn: (arg1: Course[]) => voi
     }
     throw new Error('Network response was not ok.');
   })
-    .then(response => setMessageFn(response.courses))
+    .then(response => setMessageFn(response.courses ?? response.message))
     .catch(error => setMessageFn(error.message));
 };
 
 export default function Courses(props: { auth: Auth; }) {
   const [courses, setCourses] = useState<Course[]>();
+  const [adminMessage, setAdminMessage] = useState<string>("");
 
   useEffect(() => {
-    fetchMessage(props.auth.getAccessToken(), setCourses);
+    fetchMessage('courses', props.auth.getAccessToken(), setCourses);
+    fetchMessage('admin', props.auth.getAccessToken(), setAdminMessage);
     return () => {
     };
   }, [props.auth]);
 
   if (!courses) { return <h1>Loading...</h1>; }
   return (
-    <ul>
-      {courses?.map(course => {
-        return <li key={course.id}>{course.title}</li>;
-      })}
-    </ul>
+    <>
+      <ul>
+        {courses?.map(course => {
+          return <li key={course.id}>{course.title}</li>;
+        })}
+      </ul>
+      <ul>{adminMessage}</ul>
+    </>
   );
 }
