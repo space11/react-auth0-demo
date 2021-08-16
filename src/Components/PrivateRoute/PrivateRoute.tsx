@@ -1,9 +1,10 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useContext } from 'react';
 import { Redirect, Route } from 'react-router-dom';
-import Auth from '../../Auth';
+import AuthContext from '../../Context/AuthContext';
 
-const PrivateRoute: FunctionComponent<{ component: any; auth: Auth, scopes?: string[]; path: string; }> =
-  ({ component: Component, auth, scopes, path, ...rest }) => {
+const PrivateRoute: FunctionComponent<{ component: any; scopes?: string[]; path: string; }> =
+  ({ component: Component, scopes, path, ...rest }) => {
+    const auth = useContext(AuthContext);
     return (
       <Route
         path={path}

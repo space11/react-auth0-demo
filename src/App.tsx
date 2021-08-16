@@ -9,23 +9,24 @@ import Private from './Components/Private';
 import PrivateRoute from './Components/PrivateRoute';
 import Profile from './Components/Profile';
 import Public from './Components/Public';
+import AuthContext from './Context/AuthContext';
 
 const App = () => {
   const history = useHistory();
   const [auth] = useState(() => new Auth(history));
 
   return (
-    <>
+    <AuthContext.Provider value={auth}>
       <Nav auth={auth} />
       <div className="body">
         <Route path="/" exact render={(props) => <Home auth={auth} {...props} />} />
         <Route path="/callback" render={(props) => <Callback auth={auth} {...props} />} />
-        <PrivateRoute path="/profile" auth={auth} component={Profile} />
-        <PrivateRoute path="/private" component={Private} auth={auth} />
-        <PrivateRoute path="/courses" component={Courses} scopes={['read:courses']} auth={auth} />
+        <PrivateRoute path="/profile" component={Profile} />
+        <PrivateRoute path="/private" component={Private} />
+        <PrivateRoute path="/courses" component={Courses} scopes={['read:courses']} />
         <Route path="/public" component={Public} />
       </div>
-    </>
+    </AuthContext.Provider>
   );
 };
 
