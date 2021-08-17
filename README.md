@@ -1,3 +1,8 @@
+## Auth0 Configuration
+Some Auth0 configuration is required: Create account, create application and add required configuration.
+Like callback, logout url, audience etc. 
+
+Also consider configuring Auth0 Roles
 ## Required environment variables
 Create `.env` file at the root level of the project.
 And fill up required variables.
