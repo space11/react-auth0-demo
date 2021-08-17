@@ -17,7 +17,6 @@ const App = () => {
   const [auth] = useState(() => new Auth(history));
   const [tokenRenewalComplete, setTokenRenewalComplete] = useState(false);
 
-  // TODO: Implement check using localStorage if user is logging for the first time or logged out. Then this effect is not needed.
   useEffect(() => {
     auth.renewToken(() => setTokenRenewalComplete(true));
     return () => {
