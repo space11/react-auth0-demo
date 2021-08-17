@@ -23,8 +23,7 @@ const checkJwt = jwt({
 });
 
 function checkRole(role) {
-  return function(req, res, next) {
-    console.log({user: req.user});
+  return function (req, res, next) {
     const assignedRoles = req.user["http://localhost:3000/roles"];
     if (Array.isArray(assignedRoles) && assignedRoles.includes(role)) {
       return next();
