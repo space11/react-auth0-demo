@@ -1,7 +1,8 @@
-import auth0, { Auth0Error } from 'auth0-js';
+import auth0, { Auth0Callback, Auth0Error, Auth0Result } from 'auth0-js';
 import * as H from 'history';
 
 const REDIRECT_ON_LOGIN = 'redirect_on_login';
+const LOGIN_REQUIRED = 'login_required';
 
 // Stored outside class since private
 let _idToken = null;
@@ -91,6 +92,8 @@ class Auth {
       clientID: process.env.REACT_APP_AUTH0_CLIENT_ID,
       returnTo: process.env.REACT_APP_AUTH0_LOGOUT_URL
     });
+
+    localStorage.removeItem(LOGIN_REQUIRED);
   };
 
   getAccessToken = () => {
@@ -120,8 +123,20 @@ class Auth {
     return scopes.every(scope => grantedScopes.includes(scope));
   }
 
+  isLoggedOnServer(): boolean {
+    return localStorage.getItem(LOGIN_REQUIRED) === 'undefined'
+      ? false
+      : JSON.parse(localStorage.getItem(LOGIN_REQUIRED)!) as boolean;
+  }
 
-  renewToken(cb: (err: Auth0Error | null, result: any) => void) {
+
+  // renewToken(cb: (err: Auth0Error | null, result: any) => void) {
+  renewToken(cb: Auth0Callback<Auth0Result | null, Auth0Error>) {
+    if (this.isLoggedOnServer() && cb) {
+      cb(null, null);
+      return;
+    }
+
     this.auth0.checkSession({}, (err, result) => {
       if (err) {
         console.log(`Error: ${err.error} - ${err.error_description}.`);
@@ -139,6 +154,8 @@ class Auth {
     if (delay > 0) {
       setTimeout(() => this.renewToken, delay);
     }
+
+    localStorage.setItem(LOGIN_REQUIRED, JSON.stringify(false));
   }
 }
 
